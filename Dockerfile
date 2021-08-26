@@ -1,11 +1,19 @@
 FROM python:3
 
-RUN mkdir -p ~/recording
+RUN mkdir -p /usr/src/app
 
-WORKDIR /recording
+WORKDIR /usr/src/app
 
-COPY . /recording 
+RUN chmod -R 777 /usr/src/app
 
-RUN pip --proxy http://proxy.hcm.fpt.vn:80 install -r requirements.txt
+RUN touch log_recording.txt
 
-CMD [ "python3" , " ./recording.py" ]
+COPY . /usr/src/app
+
+RUN chmod 777 recording.py
+
+RUN pip install -r requirements.txt
+
+CMD [ "python3" , "recording.py" ]
+
+USER root

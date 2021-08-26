@@ -22,3 +22,84 @@ Test gitlab2021-08-25 18:17:11-----Start Connect MinIO server-----
 2021-08-25 18:22:21-----Start run API collect list recording-----
 2021-08-25 18:22:21-----Collect list recording successfully-----
 tiennh17
+2021-08-26 12:48:09-----Start Connect MinIO server-----
+2021-08-26 12:48:09-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 12:48:09-----Start run API collect list recording-----
+2021-08-26 12:48:09-----Collect list recording successfully-----
+2021-08-26 15:49:49-----Start Connect MinIO server-----
+2021-08-26 15:49:49-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 15:49:49-----Start run API collect list recording-----
+2021-08-26 15:49:49-----Start run API collect list recording-----
+2021-08-26 15:49:49-----Start run API collect list recording-----
+2021-08-26 15:49:49-----Collect list recording successfully-----
+2021-08-26 15:52:48-----Start Connect MinIO server-----
+2021-08-26 15:52:48-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 15:52:48-----Start run API collect list recording-----
+2021-08-26 15:52:48-----Start run API collect list recording-----
+2021-08-26 15:52:48-----Start run API collect list recording-----
+2021-08-26 15:52:48-----Collect list recording successfully-----
+2021-08-26 15:56:47-----Start Connect MinIO server-----
+2021-08-26 15:56:47-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 15:56:47-----Start run API collect list recording-----
+2021-08-26 15:56:47-----Start run API collect list recording-----
+2021-08-26 15:56:48-----Start run API collect list recording-----
+2021-08-26 15:56:48-----Collect list recording successfully-----
+2021-08-26 15:57:42-----Start get infoTenant DB----- FO_undefined
+2021-08-26 15:57:42-----Start run API collect list recording-----
+2021-08-26 15:57:48-----Start run API collect list recording-----
+2021-08-26 15:57:49-----Start run API collect list recording-----
+2021-08-26 15:57:49-----Start run API collect list recording-----
+2021-08-26 15:57:50-----Start run API collect list recording-----
+2021-08-26 15:57:51-----Start run API collect list recording-----
+2021-08-26 15:57:52-----Start run API collect list recording-----
+2021-08-26 15:57:52-----Start run API collect list recording-----
+2021-08-26 15:57:53-----Start run API collect list recording-----
+2021-08-26 15:57:53-----Start run API collect list recording-----
+2021-08-26 15:57:54-----Start run API collect list recording-----
+2021-08-26 15:57:55-----Start run API collect list recording-----
+2021-08-26 15:57:55-----Start run API collect list recording-----
+2021-08-26 15:57:56-----Start run API collect list recording-----
+2021-08-26 15:57:56-----Start run API collect list recording-----
+2021-08-26 15:57:57-----Start run API collect list recording-----
+2021-08-26 15:57:58-----Start run API collect list recording-----
+2021-08-26 15:57:58-----Collect list recording successfully-----
+-------download fail recording name: /home/OnCall/recording/296595_2oOZO8Dhzg7MXRam87e7xg_20210826-103709.wavwith errror---<urlopen error [Errno -2] Name or service not known>-------download fail recording name: /home/OnCall/recording/296590_KzLSDOYWNZOlUDhTeIdyXg_20210826-083843.wavwith errror---<urlopen error [Errno -2] Name or service not known>2021-08-26 16:22:23-----Start Connect MinIO server-----
+2021-08-26 16:22:23-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 16:22:23-----Start run API collect list recording-----
+2021-08-26 16:22:23-----Collect list recording successfully-----
+2021-08-26 16:22:23-----Start writting record database for tenant :SGOC00608-----
+2021-08-26 16:22:23-----Start downloading file recording for tenant :SGOC00608-----
+
+so luong recording download success for tenant SGOC00608: 31
+2021-08-26 16:22:42-----Start get infoTenant DB----- FO_undefined
+2021-08-26 16:22:42-----Start run API collect list recording-----
+2021-08-26 16:22:42-----Start run API collect list recording-----
+2021-08-26 16:22:43-----Start run API collect list recording-----
+2021-08-26 16:22:43-----Start run API collect list recording-----
+2021-08-26 16:22:44-----Collect list recording successfully-----
+2021-08-26 16:22:44-----Start writting record database for tenant :CRV-----
+2021-08-26 16:22:44-----Start downloading file recording for tenant :CRV-----
+-------download fail recording name: http://file.oncall.vn/group1/M01/27/4C/CmQBSWEnXIKAXcnDABpzbG0xtss993.wavwith errror---<urlopen error [Errno -2] Name or service not known>
+-------download fail recording name: http://file.oncall.vn/group1/M01/27/46/CmQBSWEnV8KAPiOWAGSxDDlcvSA570.wavwith errror---<urlopen error [Errno -2] Name or service not known>
+-------download fail recording name: http://file.oncall.vn/group1/M01/27/3B/CmQBSGEnWLWAAWQOABpAzPwbgkI652.wavwith errror---<urlopen error [Errno -2] Name or service not known>
+
+so luong recording download success for tenant CRV: 3292021-08-26 16:42:38-----Start Connect MinIO server-----
+2021-08-26 16:42:38-----Start get infoTenant DB----- FO_6110ee83453f660008b15fca
+2021-08-26 16:42:38-----Start get token tenant :SGOC00608-----
+2021-08-26 16:42:38-----Start run API collect list recording-----
+2021-08-26 16:42:38-----Collect list recording successfully-----
+2021-08-26 16:42:38-----Start writting record database for tenant :SGOC00608-----
+2021-08-26 16:42:38-----Start downloading file recording for tenant :SGOC00608-----
+so luong recording download success for tenant SGOC00608: 34
+2021-08-26 16:42:50-----Start get infoTenant DB----- FO_undefined
+2021-08-26 16:42:50-----Start get token tenant :CRV-----
+2021-08-26 16:42:50-----Start run API collect list recording-----
+2021-08-26 16:42:51-----Start run API collect list recording-----
+2021-08-26 16:42:52-----Start run API collect list recording-----
+2021-08-26 16:42:52-----Start run API collect list recording-----
+2021-08-26 16:42:53-----Collect list recording successfully-----
+2021-08-26 16:42:53-----Start writting record database for tenant :CRV-----
+2021-08-26 16:42:53-----Start downloading file recording for tenant :CRV-----
+-------download fail recording name: http://file.oncall.vn/group1/M01/27/45/CmQBSWEnVvSAcQQ-AAaRbCb0Z8k821.wavwith errror---<urlopen error [Errno -2] Name or service not known>
+-------download fail recording name: http://file.oncall.vn/group1/M01/27/38/CmQBSWEnTHaAI60uAGmJrB_qPxA607.wavwith errror---<urlopen error [Errno -2] Name or service not known>
+so luong recording download success for tenant CRV: 379
