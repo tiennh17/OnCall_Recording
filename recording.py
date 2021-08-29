@@ -1,6 +1,8 @@
+#-*- coding: utf8 -*-
 from datetime import datetime
 from datetime import timedelta
 import urllib.request
+from pymongo.errors import OperationFailure
 import os
 import requests
 import pymongo
@@ -8,6 +10,7 @@ from requests.api import request
 from minio import Minio
 from minio.error import S3Error
 import json
+import sys
 
 
 class recording:
@@ -58,21 +61,20 @@ def timenow():
 def timeback(day):
     now = timenow()
     before_time = (now - timedelta(days = day))
-    print("thời gian hiện tại là : " + now.strftime("%Y-%m-%d %H:%M:%S"))
-    print("thời gian trước : " + before_time.strftime("%Y-%m-%d %H:%M:%S"))
     return before_time
 
 def download(url,path):
     try:
         urllib.request.urlretrieve(url,path)
         return True
-    except urllib.ValueError as error:
-        print (error)
-        f_out.write("-------download fail recording name: " + path + " with error code " + error + "-------")
+    except urllib.error.URLError as error:
+        #print (error)
+        sys.stdout.write("-------download fail recording name: " + url + " with errror---" + (str)(error) + "\n")
         return False
 
 def getToken(user_name,password):
     try:
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start get token tenant :" + user_name + "-----\n")
         url = 'http://118.68.169.39:8899/api/account/credentials/verify'
         header = {
           "Content-Type": "application/json"
@@ -82,18 +84,20 @@ def getToken(user_name,password):
         #         "password":"hSu!~7fN"
         # "password":"Crv@fti2021"}'''
         authen = '''{"name":"''' + user_name + '",' + '''"password":"''' + password + '''"}'''
+        #print(authen)
         result = requests.post(url, headers = header,data = authen)
         response = result.json()
         access_token = ""
         if result.status_code == 200:
             access_token = response['access_token']
+            #print(access_token)
             return access_token
         else:
-            print(result.status_code)
-            print("Fail to get access_token !!!")
+            #print(result.status_code)
+            #print("Fail to get access_token !!!")
             return access_token
     except requests.exceptions.RequestException as error:
-        print (error)
+        #print (error)
         return False
 
 def collect_listRecording(token,start_time,end_time,pagesize):
@@ -112,7 +116,7 @@ def collect_listRecording(token,start_time,end_time,pagesize):
         #cdr_recording = recording()
         if access_token !="" :
             while (True):
-                f_out.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start run API collect list recording-----\n")
+                sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start run API collect list recording-----\n")
                 url = 'http://118.68.169.39:8899/api/recordfiles/extension/list?start_time=' + start + '&end_time=' + end + '&pagination=' + (str)(pagination) + '&pagesize=' + (str)(pagesize_collect)
                 #print("request url : "  +url )
                 header = {
@@ -121,17 +125,17 @@ def collect_listRecording(token,start_time,end_time,pagesize):
                 }
                 result = requests.get(url, headers = header)
                 if result.status_code == 200:
-                    print("-------du lieu cuoc goi trang " + (str)(pagination) + " ----------")
+                    #print("-------du lieu cuoc goi trang " + (str)(pagination) + " ----------")
                     response = result.json()
-                    print("số lượng record trả về : " + str(response['count']))
+                    #print("số lượng record trả về : " + str(response['count']))
                     #xu ly collect cdr neu la trang cuoi
                     if response['count'] < pagesize_collect :
-                        print("--------Đây là trang CDR cuối---------")
+                        #print("--------Đây là trang CDR cuối---------")
                         pagesize_last =  response['count']
                         list_response.append(response['records'])
                         record_page = response['records']
-                        print(type(list_response))
-                        print(len(list_response))    
+                        #print(type(list_response))
+                        #print(len(list_response))    
                         #db_recording.oncall_record.insert_many(record_page)                    
                         for i in range(pagesize_last) :
                             # id = response['records'][i]['id']
@@ -143,8 +147,8 @@ def collect_listRecording(token,start_time,end_time,pagesize):
                     #xu ly collect cdr tung trang
                     else:
                         list_response.append(response['records'])
-                        print(type(list_response))
-                        print(len(list_response))
+                        #print(type(list_response))
+                        #print(len(list_response))
                         record_page = response['records']
                         #db_recording.oncall_record.insert_many(record_page)                          
                         for i in range(pagesize_collect) :
@@ -155,84 +159,130 @@ def collect_listRecording(token,start_time,end_time,pagesize):
                             list_path.append(tmp_obj)                                    
                         pagination += 1                 
                 else:
-                    print(result.status_code)
-                    print("Fail to get list recording !!!")
-                    f_out.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect recording fail at page " +  (str)(pagination) + " with Reason : "+ (str)(result.status_code) + "\n")
+                    #print(result.status_code)
+                    #print("Fail to get list recording !!!")
+                    sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect recording fail at page " +  (str)(pagination) + " with Reason : "+ (str)(result.status_code) + "\n")
                     return list_response
-            f_out.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect list recording successfully-----\n")
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect list recording successfully-----\n")
             return list_response               
     except requests.exceptions.RequestException as error:
-        print (error)
-        f_out.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect recording fail with exception error  " + (str)(error) + "\n")
+        #print (error)
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Collect recording fail with exception error  " + (str)(error) + "\n")
         return list_response             
 
-def connectMinIO(server,access_key, secret_key):
-    client = Minio(
-        #"118.68.171.191:9000",
-        #"play.min.io",
-        server,
-        access_key = access_key,
-        secret_key = secret_key,
-        # access_key="Q3AM3UQ867SPQQA43P2F",
-        # secret_key="zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TY",
-        secure=False,
-    )
-    return client
+def dbConnect(uri):
+    try:
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start Connect Mongo DB-----\n")
+        conn = pymongo.MongoClient(uri)
+        try:
+            conn.server_info()
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection DB Successfull-----" + "\n")
+            return conn
+        except OperationFailure as e:
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection DB Fail with error: " + str(e) + "\n")
+            return e
+    except Exception as e:
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection DB Fail with error: " + str(e) + "\n")
+        return e
 
+def MinIOconnect(server,access_key, secret_key):
+    try:
+        try:
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start Connect MinIO server-----\n")
+            client = Minio(
+                server,
+                access_key = access_key,
+                secret_key = secret_key,
+                secure=False,
+            )
+            found = client.bucket_exists("oncall")
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection MinIO Successfull-----\n")
+            return client
+        except S3Error as e:
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection MinIO Fail with error: " + str(e) + "\n")
+    except Exception as e:
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Connection MinIO Fail with error: " + str(e) + "\n")
+        return e
+        
 def putFileMinIO(client,bucket,filename,filepath):
-    client.fput_object(
+    try:
+        client.fput_object(
         bucket, filename, filepath,
-    )
-    print(
-        filename  + " is successfully uploaded as "
-        "to bucket "  + bucket
-    )
+        )
+    except S3Error as exc:
+        sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----error occurred upload object to MinIO: ", exc + "\n")
 
 def insertRecord(connetion,db,listRecord):
+    sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start insert recording-----\n")
     db = connetion.oncall_record
     for page_record in listRecord :
        insert_record = db.document.insert_many(page_record)
 
 def getInfoTenant(connection,db):
+    sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start get infoTenant DB----- " + db +"\n")
     collection = connection[db]
     document = collection.settings.find()
-    print(document['username'])
+    InfoTenant = []
+    for k in document:
+        ##print(k['value'])
+        InfoTenant.append(k['value'])
+    if len(InfoTenant) !=0 :
+        return InfoTenant
+    else:
+       sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Fail get infoTenant DB----- " + db + "\n")
 
 
 if __name__ == "__main__" :
-    #token = getToken("test01","hSu!~7fN")
-    #token = getToken("CRV","Crv@fti2021")
+
+    start_time = timeback(1).strftime("%Y-%m-%d 23:59:59")
+    end_time = timenow().strftime("%Y-%m-%d 23:59:59")
     global f_out
     global list_path
+    MONGO_URI = os.getenv("MONGO_URI")
+    MINIO_URI = os.getenv("MINIO_URI")
+    MINIO_KEY = os.getenv("MINIO_KEY")
+    MINIO_SECRET = os.getenv("MINIO_SECRET")
+    MINIO_BUCKET = os.getenv("MINIO_BUCKET")
+    tmp_pathStorage = ""
+    tmp_pathStorage = "/tmp/"
+    f_out = open("/tmp/log_recording.txt","a+") 
     global db_recording
-    clientMinIO = connectMinIO("118.68.171.191:9000","Q3AM3UQ867SPQQA43P2F","zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TY")
-    clientMogo = pymongo.MongoClient("mongodb://admin:Fti%40dmin%21%40%23123@118.69.192.97:27017/?authSource=admin")
-    #clientMogo = pymongo.MongoClient("mongodb://fwork:FWork%40123@mongo.dev.fpt.work:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+    list_path = []
+    clientMinIO = MinIOconnect(MINIO_URI,MINIO_KEY,MINIO_SECRET)
+    clientMogo = dbConnect(MONGO_URI)
+    #db_recording = clientMogo['oncall_recording']
     dbs = clientMogo.list_database_names()
     for db in dbs :
         if db[0:2] == 'FO':#DB dich vu OnCall
-            getInfoTenant(clientMogo,db)
-            # cursor = clientMogo[db].settings.find().value
-            # for document in cursor.find():
-            #     print (document)
-
-    #db_recording = clientMogo.oncall_recording    
-    list_path = []
-    f_out = open("log_recording.txt","a+")
-    list_record = collect_listRecording(token,"2021-07-19 00:00:00","2021-07-19 09:00:00",100)
-    #print(list_path)
-    #print(type(list_record))
-    #print(type(list_path))
-    #print(len(list_record))
-    #print(list_path[2])
-    for record in list_path :
-        url = "http://file.oncall.vn/" + str(record[0])
-        if (download(url,"D:\\Recording_OnCall\\" + str(record[1]))) == False:
+            count = 0
+            InfoTenant = getInfoTenant(clientMogo,db)
+            #print(InfoTenant)
+            token = getToken(InfoTenant[0],InfoTenant[1])
+            #list_record = collect_listRecording(token,"2021-08-26 15:00:00","2021-08-26 17:00:59",100)
+            list_record = collect_listRecording(token,start_time,end_time,100)
+            db_recording = clientMogo[db]
+            #sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start writting record database for tenant :" + InfoTenant[0] + "-----\n")
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start writting record database for tenant :" + InfoTenant[0] + "-----\n")
+            for page_record in list_record :
+                insert_record = db_recording.oncall_record.insert_many(page_record)
+            #sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start downloading file recording for tenant :" + InfoTenant[0] + "-----\n")
+            sys.stdout.write(timenow().strftime("%Y-%m-%d %H:%M:%S") + "-----Start downloading file recording for tenant :" + InfoTenant[0] + "-----\n")
+            for record in list_path :
+                url = "http://file.oncall.vn/" + str(record[0])
+                count_fail = 0
+                while(count_fail<3):
+                    if (download(url,tmp_pathStorage + str(record[1]))) == False:
+                        count_fail += 1
+                        sys.stdout.write("Retry download file: " + str(record[1]) + "\n")
+                    else: 
+                        count += 1
+                        #putFileMinIO(clientMinIO,MINIO_BUCKET,str(record[1]),tmp_pathStorage + str(record[1]))
+                        putFileMinIO(clientMinIO,MINIO_BUCKET,str(record[1]),tmp_pathStorage + str(record[1]))
+                        break
+            #print("\nso luong recording download success: ",count)
+            #sys.stdout.write("so luong recording download success for tenant " + InfoTenant[0] + ": " + (str)(count) + "\n")
+            sys.stdout.write("so luong recording download success for tenant " + InfoTenant[0] + ": " + (str)(count) + "\n")
+        else:
             continue
-        else: 
-            putFileMinIO(clientMinIO,"recordingoncall",str(record[1]),"D:\\Recording_OnCall\\" + str(record[1]))
-#xoa file cu hon x ngay
 
-    #db_recording.oncall_record.delete_many({})
-    ## for page_record in list_record :
-    ##     insert_record = db_recording.oncall_record.insert_many(page_record)
+
